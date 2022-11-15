@@ -1,18 +1,21 @@
+use mensa::Mealplan;
+
 mod mensa;
 
 //use crate::mensa::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let resp = reqwest::get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de")
-        .await?
-        .json::<mensa::MensaShedhalle>()
-        .await?;
-    println!("{:#?}", resp);
+    let shedhalle = mensa::Mensa::from(mensa::MensaName::Shedhalle).await?;
+    if let mensa::Mensa::Shedhalle(resp) = shedhalle {
+        //println!("{:#?}", resp);
+        //println!("{}", resp.today());
+        for a in resp.today().iter() {
+            a.print_short_info();
+        }
+
+    }
     Ok(())
 }
 
 
-pub enum Mensa {
-    Shedhalle(mensa::MensaShedhalle),
-}
