@@ -11,3 +11,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{:#?}", resp);
     Ok(())
 }
+
+
+pub enum Mensa {
+    Shedhalle(mensa::MensaShedhalle),
+}
