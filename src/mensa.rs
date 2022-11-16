@@ -75,6 +75,17 @@ pub struct MensaMorgenstelle {
     canteen: Canteen,
 }
 
+impl Mealplan for MensaMorgenstelle {
+    fn id(&self) -> &str {
+        &self.canteen.canteen_id
+    }
+
+    fn today(&self) -> Vec<&Menu> {
+        let local = format!("{}", Local::now().format("%Y-%m-%d"));
+        self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
+    }
+}
+
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Canteen {
