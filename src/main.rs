@@ -11,7 +11,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //println!("{:#?}", resp);
         //println!("{}", resp.today());
         for a in resp.today().iter() {
-            a.print_short_info();
+            a.print_very_short_info();
         }
 
     }

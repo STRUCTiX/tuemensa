@@ -115,6 +115,16 @@ impl Menu {
     pub fn print_short_info(&self) {
         println!("{}: {}, {}€", self.menu_line, self.menu.join(", "), self.student_price);
     }
+
+    pub fn print_very_short_info(&self) {
+        if let Some(name) = self.menu.first() {
+            println!("{}", name);
+        }
+    }
+
+    pub fn get_short_info(&self) -> (&str, String, &str) {
+        (&self.menu_line, self.menu.join(", "), &self.student_price)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
