@@ -37,6 +37,7 @@ tuemensa -s -o
 ```
 
 Example screenshot:
+
 ![CommandOutput](screenshots/kde_command_output.png)
 
 For KDE this can be achieved with the Plasma 5 Applet [Command Output](https://store.kde.org/p/1166510/).
