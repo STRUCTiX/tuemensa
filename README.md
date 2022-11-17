@@ -22,6 +22,9 @@ Display the current plan for both canteens:
 ```sh
 tuemensa -s -m
 ```
+Example screenshot:
+
+![MorgenstelleShedhalle](screenshots/output_morgenstelle_shedhalle.png)
 
 Display the plan for the next day:
 
