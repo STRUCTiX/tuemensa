@@ -12,18 +12,6 @@ mod cli;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = cli::get_args();
     exec_arguments(&args).await?;
-    //let shedhalle = mensa::Mensa::from(mensa::MensaName::Shedhalle);
-    //let morgenstelle = mensa::Mensa::from(mensa::MensaName::Morgenstelle);
-    //if let mensa::Mensa::Shedhalle(resp) = shedhalle.await? {
-    //    let data = resp.today().iter().map(|&x| x.get_short_info()).collect::<Vec<(&str, String, &str)>>();
-    //    table_short(data);
-    //}
-
-    //if let mensa::Mensa::Morgenstelle(resp) = morgenstelle.await? {
-    //    let data = resp.today().iter().map(|&x| x.get_short_info()).collect::<Vec<(&str, String, &str)>>();
-    //    table_short(data);
-    //}
-
     Ok(())
 }
 
@@ -46,7 +34,7 @@ async fn exec_arguments(args: &cli::Args) -> Result<(), Box<dyn std::error::Erro
 }
 
 fn exec_arg_helper(args: &cli::Args, m: &dyn mensa::Mealplan) {
-     if let Some(menus) = m.nth(args.days) {
+     if let Some(menus) = m.nth(args.days, args.vegetarian) {
         if args.plaintext {
             for i in menus.iter() {
                 i.print_short_info();

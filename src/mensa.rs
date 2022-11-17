@@ -13,7 +13,7 @@ pub trait Mealplan {
     fn id(&self) -> &str;
     fn name(&self) -> &str;
     fn today(&self) -> Vec<&Menu>;
-    fn nth(&self, days: u8) -> Option<Vec<&Menu>>;
+    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>>;
 }
 
 pub enum Mensa {
@@ -88,11 +88,15 @@ impl Mealplan for MensaShedhalle {
         self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
     }
 
-    fn nth(&self, days: u8) -> Option<Vec<&Menu>> {
+    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
         match get_nth_date(days) {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
-                Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                if vegetarian {
+                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local && x.menu_line.contains("veg")).collect())
+                } else {
+                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                }
             },
             _ => None
         }
@@ -122,11 +126,15 @@ impl Mealplan for MensaMorgenstelle {
         self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
     }
 
-    fn nth(&self, days: u8) -> Option<Vec<&Menu>> {
+    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
         match get_nth_date(days) {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
-                Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                if vegetarian {
+                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local && x.menu_line.contains("veg")).collect())
+                } else {
+                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                }
             },
             _ => None
         }

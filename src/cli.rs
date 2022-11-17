@@ -23,6 +23,10 @@ pub struct Args {
    /// Offset of days in the future (valid inputs 0-7)
    #[arg(short, long, default_value_t = 0)]
    pub days: u8,
+
+   /// Show the vegetarian menu
+   #[arg(short, long, default_value_t = false)]
+   pub vegetarian: bool,
 }
 
 pub fn get_args() -> Args {
