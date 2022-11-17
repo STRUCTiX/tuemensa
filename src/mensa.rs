@@ -1,5 +1,5 @@
 extern crate serde_derive;
-use chrono::{DateTime, Local};
+use chrono::{Local, Datelike};
 
 use serde::{Serialize, Deserialize};
 
@@ -11,7 +11,9 @@ pub enum MensaName {
 
 pub trait Mealplan {
     fn id(&self) -> &str;
+    fn name(&self) -> &str;
     fn today(&self) -> Vec<&Menu>;
+    fn nth(&self, days: u8) -> Option<Vec<&Menu>>;
 }
 
 pub enum Mensa {
@@ -43,6 +45,23 @@ impl Mensa {
 }
 
 
+
+fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
+    if days > 7 {
+        return None;
+    }
+
+    if let Some(dt) = Local::now().checked_add_days(chrono::Days::new(days as u64)) {
+        return match dt.weekday() {
+            chrono::Weekday::Sat => dt.checked_add_days(chrono::Days::new(2)),
+            chrono::Weekday::Sun => dt.checked_add_days(chrono::Days::new(1)),
+            _ => Some(dt)
+        };
+    }
+    None
+}
+
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MensaShedhalle {
     #[serde(rename = "611")]
@@ -60,9 +79,23 @@ impl Mealplan for MensaShedhalle {
         &self.canteen.canteen_id
     }
 
+    fn name(&self) -> &str {
+        &&self.canteen.canteen
+    }
+
     fn today(&self) -> Vec<&Menu> {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
         self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
+    }
+
+    fn nth(&self, days: u8) -> Option<Vec<&Menu>> {
+        match get_nth_date(days) {
+            Some(dt) => {
+                let local = format!("{}", dt.format("%Y-%m-%d"));
+                Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+            },
+            _ => None
+        }
     }
 }
 
@@ -80,9 +113,23 @@ impl Mealplan for MensaMorgenstelle {
         &self.canteen.canteen_id
     }
 
+    fn name(&self) -> &str {
+        &&self.canteen.canteen
+    }
+
     fn today(&self) -> Vec<&Menu> {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
         self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
+    }
+
+    fn nth(&self, days: u8) -> Option<Vec<&Menu>> {
+        match get_nth_date(days) {
+            Some(dt) => {
+                let local = format!("{}", dt.format("%Y-%m-%d"));
+                Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+            },
+            _ => None
+        }
     }
 }
 
