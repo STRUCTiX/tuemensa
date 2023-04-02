@@ -2,6 +2,7 @@ use mensa::Mealplan;
 use comfy_table::*;
 use comfy_table::presets::UTF8_FULL;
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
+use chrono::{Local, Datelike};
 
 mod mensa;
 mod cli;
@@ -48,6 +49,9 @@ fn exec_arg_helper(args: &cli::Args, m: &dyn mensa::Mealplan) {
         }
         
         // Default case --> print fancy
+        if let Some(dt) = Local::now().checked_add_days(chrono::Days::new(args.days as u64)) {
+            println!("Datum: {}", dt.date_naive());
+        }
         println!("{}", m.name());
         table_short(menus.iter().map(|&x| x.get_short_info()).collect::<Vec<(&str, String, &str)>>());
      }
