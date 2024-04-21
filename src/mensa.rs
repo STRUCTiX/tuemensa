@@ -1,12 +1,11 @@
 extern crate serde_derive;
-use chrono::{Local, Datelike};
+use chrono::{Datelike, Local};
 
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 pub enum MensaName {
     Shedhalle,
-    Morgenstelle
+    Morgenstelle,
 }
 
 pub trait Mealplan {
@@ -18,33 +17,35 @@ pub trait Mealplan {
 
 pub enum Mensa {
     Shedhalle(MensaShedhalle),
-    Morgenstelle(MensaMorgenstelle)
+    Morgenstelle(MensaMorgenstelle),
 }
 
 impl Mensa {
     pub async fn from(name: MensaName) -> Result<Mensa, Box<dyn std::error::Error>> {
         match name {
             MensaName::Shedhalle => {
-                let resp = reqwest::get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de")
-                    .await?
-                    .json::<MensaShedhalle>()
-                    .await?;
+                let resp = reqwest::get(
+                    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de",
+                )
+                .await?
+                .json::<MensaShedhalle>()
+                .await?;
 
                 Ok(Mensa::Shedhalle(resp))
-            },
+            }
             MensaName::Morgenstelle => {
-                let resp = reqwest::get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de")
-                    .await?
-                    .json::<MensaMorgenstelle>()
-                    .await?;
+                let resp = reqwest::get(
+                    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de",
+                )
+                .await?
+                .json::<MensaMorgenstelle>()
+                .await?;
 
                 Ok(Mensa::Morgenstelle(resp))
             }
         }
     }
 }
-
-
 
 fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
     if days > 7 {
@@ -55,12 +56,11 @@ fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
         return match dt.weekday() {
             chrono::Weekday::Sat => dt.checked_add_days(chrono::Days::new(2)),
             chrono::Weekday::Sun => dt.checked_add_days(chrono::Days::new(1)),
-            _ => Some(dt)
+            _ => Some(dt),
         };
     }
     None
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MensaShedhalle {
@@ -85,7 +85,11 @@ impl Mealplan for MensaShedhalle {
 
     fn today(&self) -> Vec<&Menu> {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
-        self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
+        self.canteen
+            .menus
+            .iter()
+            .filter(|&x| x.menu_date == local)
+            .collect()
     }
 
     fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
@@ -93,18 +97,27 @@ impl Mealplan for MensaShedhalle {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
                 if vegetarian {
-                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local && x.menu_line.contains("veg")).collect())
+                    Some(
+                        self.canteen
+                            .menus
+                            .iter()
+                            .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
+                            .collect(),
+                    )
                 } else {
-                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                    Some(
+                        self.canteen
+                            .menus
+                            .iter()
+                            .filter(|&x| x.menu_date == local)
+                            .collect(),
+                    )
                 }
-            },
-            _ => None
+            }
+            _ => None,
         }
     }
 }
-
-
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MensaMorgenstelle {
@@ -123,7 +136,11 @@ impl Mealplan for MensaMorgenstelle {
 
     fn today(&self) -> Vec<&Menu> {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
-        self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect()
+        self.canteen
+            .menus
+            .iter()
+            .filter(|&x| x.menu_date == local)
+            .collect()
     }
 
     fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
@@ -131,16 +148,27 @@ impl Mealplan for MensaMorgenstelle {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
                 if vegetarian {
-                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local && x.menu_line.contains("veg")).collect())
+                    Some(
+                        self.canteen
+                            .menus
+                            .iter()
+                            .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
+                            .collect(),
+                    )
                 } else {
-                    Some(self.canteen.menus.iter().filter(|&x| x.menu_date == local).collect())
+                    Some(
+                        self.canteen
+                            .menus
+                            .iter()
+                            .filter(|&x| x.menu_date == local)
+                            .collect(),
+                    )
                 }
-            },
-            _ => None
+            }
+            _ => None,
         }
     }
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Canteen {
@@ -179,7 +207,12 @@ impl Menu {
     }
 
     pub fn print_short_info(&self) {
-        println!("{}: {}, {}€", self.menu_line, self.menu.join(", "), self.student_price);
+        println!(
+            "{}: {}, {}€",
+            self.menu_line,
+            self.menu.join(", "),
+            self.student_price
+        );
     }
 
     pub fn print_very_short_info(&self) {
@@ -215,4 +248,3 @@ pub enum FiltersInclude {
     #[serde(rename = "vegan")]
     Vegan,
 }
-

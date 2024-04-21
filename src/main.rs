@@ -1,11 +1,11 @@
-use mensa::Mealplan;
-use comfy_table::*;
-use comfy_table::presets::UTF8_FULL;
+use chrono::{Datelike, Local};
 use comfy_table::modifiers::UTF8_ROUND_CORNERS;
-use chrono::{Local, Datelike};
+use comfy_table::presets::UTF8_FULL;
+use comfy_table::*;
+use mensa::Mealplan;
 
-mod mensa;
 mod cli;
+mod mensa;
 
 //use crate::mensa::*;
 
@@ -35,7 +35,7 @@ async fn exec_arguments(args: &cli::Args) -> Result<(), Box<dyn std::error::Erro
 }
 
 fn exec_arg_helper(args: &cli::Args, m: &dyn mensa::Mealplan) {
-     if let Some(menus) = m.nth(args.days, args.vegetarian) {
+    if let Some(menus) = m.nth(args.days, args.vegetarian) {
         if args.plaintext {
             for i in menus.iter() {
                 i.print_short_info();
@@ -47,14 +47,19 @@ fn exec_arg_helper(args: &cli::Args, m: &dyn mensa::Mealplan) {
             menus.first().unwrap().print_very_short_info();
             return;
         }
-        
+
         // Default case --> print fancy
         if let Some(dt) = Local::now().checked_add_days(chrono::Days::new(args.days as u64)) {
             println!("Datum: {}", dt.date_naive());
         }
         println!("{}", m.name());
-        table_short(menus.iter().map(|&x| x.get_short_info()).collect::<Vec<(&str, String, &str)>>());
-     }
+        table_short(
+            menus
+                .iter()
+                .map(|&x| x.get_short_info())
+                .collect::<Vec<(&str, String, &str)>>(),
+        );
+    }
 }
 
 fn table_short(data: Vec<(&str, String, &str)>) {
@@ -68,7 +73,7 @@ fn table_short(data: Vec<(&str, String, &str)>) {
         .set_content_arrangement(ContentArrangement::Dynamic)
         //.set_width(40)
         .set_header(vec!["Art", "Beschreibung", "Preis (Student)"]);
-    
+
     for d in data.iter() {
         table.add_row(vec![Cell::new(d.0), Cell::new(&d.1), Cell::new(d.2)]);
     }
@@ -78,4 +83,3 @@ fn table_short(data: Vec<(&str, String, &str)>) {
 
     println!("{table}");
 }
-

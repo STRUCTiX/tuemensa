@@ -4,29 +4,29 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-   /// Show Mensa Morgenstelle
-   #[arg(short, long, default_value_t = false)]
-   pub morgenstelle: bool,
+    /// Show Mensa Morgenstelle
+    #[arg(short, long, default_value_t = false)]
+    pub morgenstelle: bool,
 
-   /// Show Mensa Shedhalle
-   #[arg(short, long, default_value_t = false)]
-   pub shedhalle: bool,
+    /// Show Mensa Shedhalle
+    #[arg(short, long, default_value_t = false)]
+    pub shedhalle: bool,
 
-   /// Format as plain text
-   #[arg(short, long, default_value_t = false)]
-   pub plaintext: bool,
+    /// Format as plain text
+    #[arg(short, long, default_value_t = false)]
+    pub plaintext: bool,
 
-   /// Use very short format (oneline)
-   #[arg(short, long, default_value_t = false)]
-   pub oneline: bool,
+    /// Use very short format (oneline)
+    #[arg(short, long, default_value_t = false)]
+    pub oneline: bool,
 
-   /// Offset of days in the future (valid inputs 0-7)
-   #[arg(short, long, default_value_t = 0)]
-   pub days: u8,
+    /// Offset of days in the future (valid inputs 0-7)
+    #[arg(short, long, default_value_t = 0)]
+    pub days: u8,
 
-   /// Show the vegetarian menu
-   #[arg(short, long, default_value_t = false)]
-   pub vegetarian: bool,
+    /// Show the vegetarian menu
+    #[arg(short, long, default_value_t = false)]
+    pub vegetarian: bool,
 }
 
 pub fn get_args() -> Args {
