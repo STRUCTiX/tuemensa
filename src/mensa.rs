@@ -1,7 +1,10 @@
 extern crate serde_derive;
+use std::time::Duration;
+
 use chrono::{Datelike, Local};
 
 use serde::{Deserialize, Serialize};
+use ureq::{Agent, Error};
 
 pub enum MensaName {
     Shedhalle,
@@ -21,25 +24,34 @@ pub enum Mensa {
 }
 
 impl Mensa {
-    pub async fn from(name: MensaName) -> Result<Mensa, Box<dyn std::error::Error>> {
+    pub fn from(name: MensaName) -> Result<Mensa, Error> {
+        let agent: Agent = ureq::AgentBuilder::new()
+            .timeout_read(Duration::from_secs(5))
+            .timeout_write(Duration::from_secs(5))
+            .build();
+
         match name {
             MensaName::Shedhalle => {
-                let resp = reqwest::get(
-                    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de",
-                )
-                .await?
-                .json::<MensaShedhalle>()
-                .await?;
+                let resp = agent
+                    .get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de")
+                    .call()?
+                    .into_json::<MensaShedhalle>()?;
+                //let resp = reqwest::blocking::get(
+                //    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de",
+                //)?
+                //.json::<MensaShedhalle>()?;
 
                 Ok(Mensa::Shedhalle(resp))
             }
             MensaName::Morgenstelle => {
-                let resp = reqwest::get(
-                    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de",
-                )
-                .await?
-                .json::<MensaMorgenstelle>()
-                .await?;
+                //let resp = reqwest::blocking::get(
+                //    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de",
+                //)?
+                //.json::<MensaMorgenstelle>()?;
+                let resp = agent
+                    .get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de")
+                    .call()?
+                    .into_json::<MensaMorgenstelle>()?;
 
                 Ok(Mensa::Morgenstelle(resp))
             }
