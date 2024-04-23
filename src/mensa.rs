@@ -1,9 +1,7 @@
 extern crate serde_derive;
-use std::time::Duration;
-
 use chrono::{Datelike, Local};
-
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 use ureq::{Agent, Error};
 
 pub enum MensaName {
@@ -16,47 +14,6 @@ pub trait Mealplan {
     fn name(&self) -> &str;
     fn today(&self) -> Vec<&Menu>;
     fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>>;
-}
-
-pub enum Mensa {
-    Shedhalle(MensaShedhalle),
-    Morgenstelle(MensaMorgenstelle),
-}
-
-impl Mensa {
-    pub fn from(name: MensaName) -> Result<Mensa, Error> {
-        let agent: Agent = ureq::AgentBuilder::new()
-            .timeout_read(Duration::from_secs(5))
-            .timeout_write(Duration::from_secs(5))
-            .build();
-
-        match name {
-            MensaName::Shedhalle => {
-                let resp = agent
-                    .get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de")
-                    .call()?
-                    .into_json::<MensaShedhalle>()?;
-                //let resp = reqwest::blocking::get(
-                //    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/611?lang=de",
-                //)?
-                //.json::<MensaShedhalle>()?;
-
-                Ok(Mensa::Shedhalle(resp))
-            }
-            MensaName::Morgenstelle => {
-                //let resp = reqwest::blocking::get(
-                //    "https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de",
-                //)?
-                //.json::<MensaMorgenstelle>()?;
-                let resp = agent
-                    .get("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/621?lang=de")
-                    .call()?
-                    .into_json::<MensaMorgenstelle>()?;
-
-                Ok(Mensa::Morgenstelle(resp))
-            }
-        }
-    }
 }
 
 fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
@@ -75,69 +32,36 @@ fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct MensaShedhalle {
+pub struct Mensa {
+    #[serde(alias = "621")]
     #[serde(rename = "611")]
     canteen: Canteen,
 }
 
-impl MensaShedhalle {
-    fn print(&self) {
+impl Mensa {
+    pub fn from(name: MensaName) -> Result<Mensa, Error> {
+        let agent: Agent = ureq::AgentBuilder::new()
+            .timeout_read(Duration::from_secs(5))
+            .timeout_write(Duration::from_secs(5))
+            .build();
+
+        let canteen_id = match name {
+            MensaName::Shedhalle => 611,
+            MensaName::Morgenstelle => 621,
+        };
+
+        let url =
+            format!("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/{canteen_id}?lang=de");
+
+        Ok(agent.get(&url).call()?.into_json::<Mensa>()?)
+    }
+
+    fn _print(&self) {
         println!("{:#?}", self);
     }
 }
 
-impl Mealplan for MensaShedhalle {
-    fn id(&self) -> &str {
-        &self.canteen.canteen_id
-    }
-
-    fn name(&self) -> &str {
-        &&self.canteen.canteen
-    }
-
-    fn today(&self) -> Vec<&Menu> {
-        let local = format!("{}", Local::now().format("%Y-%m-%d"));
-        self.canteen
-            .menus
-            .iter()
-            .filter(|&x| x.menu_date == local)
-            .collect()
-    }
-
-    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
-        match get_nth_date(days) {
-            Some(dt) => {
-                let local = format!("{}", dt.format("%Y-%m-%d"));
-                if vegetarian {
-                    Some(
-                        self.canteen
-                            .menus
-                            .iter()
-                            .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
-                            .collect(),
-                    )
-                } else {
-                    Some(
-                        self.canteen
-                            .menus
-                            .iter()
-                            .filter(|&x| x.menu_date == local)
-                            .collect(),
-                    )
-                }
-            }
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct MensaMorgenstelle {
-    #[serde(rename = "621")]
-    canteen: Canteen,
-}
-
-impl Mealplan for MensaMorgenstelle {
+impl Mealplan for Mensa {
     fn id(&self) -> &str {
         &self.canteen.canteen_id
     }
@@ -214,7 +138,7 @@ pub struct Menu {
 }
 
 impl Menu {
-    pub fn print(&self) {
+    pub fn _print(&self) {
         println!("{:#?}", self);
     }
 

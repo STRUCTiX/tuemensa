@@ -1,34 +1,33 @@
 use chrono::Local;
+use mensa::{Mealplan, Mensa, MensaName};
 use prettytable::{row, Cell, Row, Table};
 
 mod cli;
 mod mensa;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() {
     let args = cli::get_args();
-    exec_arguments(&args)?;
-    Ok(())
+    exec_arguments(&args);
 }
 
-fn exec_arguments(args: &cli::Args) -> Result<(), Box<dyn std::error::Error>> {
-    let shedhalle = mensa::Mensa::from(mensa::MensaName::Shedhalle);
-    let morgenstelle = mensa::Mensa::from(mensa::MensaName::Morgenstelle);
+fn exec_arguments(args: &cli::Args) {
+    let shedhalle = Mensa::from(MensaName::Shedhalle);
+    let morgenstelle = Mensa::from(MensaName::Morgenstelle);
 
     if args.morgenstelle {
-        if let mensa::Mensa::Morgenstelle(resp) = morgenstelle? {
+        if let Ok(resp) = morgenstelle {
             exec_arg_helper(args, &resp);
         }
     }
 
     if args.shedhalle {
-        if let mensa::Mensa::Shedhalle(resp) = shedhalle? {
+        if let Ok(resp) = shedhalle {
             exec_arg_helper(args, &resp);
         }
     }
-    Ok(())
 }
 
-fn exec_arg_helper(args: &cli::Args, m: &dyn mensa::Mealplan) {
+fn exec_arg_helper(args: &cli::Args, m: &impl Mealplan) {
     if let Some(menus) = m.nth(args.days, args.vegetarian) {
         if args.plaintext {
             for i in menus.iter() {
