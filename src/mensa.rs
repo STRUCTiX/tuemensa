@@ -12,8 +12,8 @@ pub enum MensaName {
 pub trait Mealplan {
     fn id(&self) -> &str;
     fn name(&self) -> &str;
-    fn today(&self) -> Vec<&Menu>;
-    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>>;
+    fn today(&self) -> (String, Vec<&Menu>);
+    fn nth(&self, days: u8, vegetarian: bool) -> Option<(String, Vec<&Menu>)>;
 }
 
 fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
@@ -70,35 +70,40 @@ impl Mealplan for Mensa {
         &&self.canteen.canteen
     }
 
-    fn today(&self) -> Vec<&Menu> {
+    fn today(&self) -> (String, Vec<&Menu>) {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
-        self.canteen
-            .menus
-            .iter()
-            .filter(|&x| x.menu_date == local)
-            .collect()
+        (
+            local.clone(),
+            self.canteen
+                .menus
+                .iter()
+                .filter(|&x| x.menu_date == local)
+                .collect(),
+        )
     }
 
-    fn nth(&self, days: u8, vegetarian: bool) -> Option<Vec<&Menu>> {
+    fn nth(&self, days: u8, vegetarian: bool) -> Option<(String, Vec<&Menu>)> {
         match get_nth_date(days) {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
                 if vegetarian {
-                    Some(
+                    Some((
+                        local.clone(),
                         self.canteen
                             .menus
                             .iter()
                             .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
                             .collect(),
-                    )
+                    ))
                 } else {
-                    Some(
+                    Some((
+                        local.clone(),
                         self.canteen
                             .menus
                             .iter()
                             .filter(|&x| x.menu_date == local)
                             .collect(),
-                    )
+                    ))
                 }
             }
             _ => None,

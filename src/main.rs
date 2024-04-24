@@ -1,4 +1,3 @@
-use chrono::Local;
 use mensa::{Mealplan, Mensa, MensaName};
 use prettytable::{row, Cell, Row, Table};
 
@@ -30,24 +29,23 @@ fn exec_arguments(args: &cli::Args) {
 fn exec_arg_helper(args: &cli::Args, m: &impl Mealplan) {
     if let Some(menus) = m.nth(args.days, args.vegetarian) {
         if args.plaintext {
-            for i in menus.iter() {
+            for i in menus.1.iter() {
                 i.print_short_info();
             }
             return;
         }
 
         if args.oneline {
-            menus.first().unwrap().print_very_short_info();
+            menus.1.first().unwrap().print_very_short_info();
             return;
         }
 
         // Default case --> print fancy
-        if let Some(dt) = Local::now().checked_add_days(chrono::Days::new(args.days as u64)) {
-            println!("Datum: {}", dt.date_naive());
-        }
+        println!("Datum: {}", menus.0);
         println!("{}", m.name());
         table_short(
             menus
+                .1
                 .iter()
                 .map(|&x| x.get_short_info())
                 .collect::<Vec<(&str, String, &str)>>(),
