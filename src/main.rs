@@ -10,17 +10,20 @@ fn main() {
 }
 
 fn exec_arguments(args: &cli::Args) {
-    let shedhalle = Mensa::from(MensaName::Shedhalle);
-    let morgenstelle = Mensa::from(MensaName::Morgenstelle);
-
     if args.morgenstelle {
-        if let Ok(resp) = morgenstelle {
+        if let Ok(resp) = Mensa::from(MensaName::Morgenstelle) {
             exec_arg_helper(args, &resp);
         }
     }
 
     if args.shedhalle {
-        if let Ok(resp) = shedhalle {
+        if let Ok(resp) = Mensa::from(MensaName::Shedhalle) {
+            exec_arg_helper(args, &resp);
+        }
+    }
+
+    if args.prinzkarl {
+        if let Ok(resp) = Mensa::from(MensaName::PrinzKarl) {
             exec_arg_helper(args, &resp);
         }
     }

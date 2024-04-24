@@ -7,6 +7,7 @@ use ureq::{Agent, Error};
 pub enum MensaName {
     Shedhalle,
     Morgenstelle,
+    PrinzKarl,
 }
 
 pub trait Mealplan {
@@ -33,8 +34,9 @@ fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Mensa {
-    #[serde(alias = "621")]
-    #[serde(rename = "611")]
+    #[serde(alias = "621")] // Morgenstelle
+    #[serde(alias = "623")] // Prinz Karl
+    #[serde(rename = "611")] // Shedhalle
     canteen: Canteen,
 }
 
@@ -48,6 +50,7 @@ impl Mensa {
         let canteen_id = match name {
             MensaName::Shedhalle => 611,
             MensaName::Morgenstelle => 621,
+            MensaName::PrinzKarl => 623,
         };
 
         let url =

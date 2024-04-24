@@ -8,7 +8,8 @@ Options:
 
 - `-m`, `--morgenstelle`  Show Mensa Morgenstelle
 - `-s`, `--shedhalle`     Show Mensa Shedhalle
-- `-p`, `--plaintext`     Format as plain text
+- `-p`, `--prinzkarl` Show Mensa Prinz Karl
+- `--plaintext`       Format as plain text
 - `-o`, `--oneline`       Use very short format (oneline)
 - `-d`, `--days <DAYS>`   Offset of days in the future (valid inputs 0-7) [default: 0]
 - `-v`, `--vegetarian`    Show the vegetarian menu

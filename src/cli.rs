@@ -12,8 +12,12 @@ pub struct Args {
     #[arg(short, long, default_value_t = false)]
     pub shedhalle: bool,
 
-    /// Format as plain text
+    /// Show Mensa Prinz Karl
     #[arg(short, long, default_value_t = false)]
+    pub prinzkarl: bool,
+
+    /// Format as plain text
+    #[arg(long, default_value_t = false)]
     pub plaintext: bool,
 
     /// Use very short format (oneline)
