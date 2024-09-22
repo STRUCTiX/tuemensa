@@ -1,22 +1,22 @@
 use clap::Parser;
 
-/// tuemensa is a simple cli tool to retrieve the current meal plan.
+///tuemensa is a simple command-line tool designed to retrieve the current meal plans for the canteens at Eberhard Karls Universität Tübingen.
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
-    /// Show Mensa Morgenstelle
+    /// Display the meal plan for Mensa Morgenstelle
     #[arg(short, long, default_value_t = false)]
     pub morgenstelle: bool,
 
-    /// Show Mensa Wilhelmstraße
+    /// Display the meal plan for Mensa Wilhelmstraße
     #[arg(short, long, default_value_t = false)]
     pub wilhelmstrasse: bool,
 
-    /// Show Mensa Prinz Karl
+    /// Display the meal plan for Mensa Prinz Karl
     #[arg(short, long, default_value_t = false)]
     pub prinzkarl: bool,
 
-    /// Format as plain text
+    /// Output the meal plan in plain text format
     #[arg(long, default_value_t = false)]
     pub plaintext: bool,
 
@@ -24,11 +24,11 @@ pub struct Args {
     #[arg(short, long, default_value_t = false)]
     pub oneline: bool,
 
-    /// Offset of days in the future (valid inputs 0-7)
+    /// Specify the number of days ahead to display (valid values: 0-7)
     #[arg(short, long, default_value_t = 0)]
     pub days: u8,
 
-    /// Show the vegetarian menu
+    /// Display only the vegetarian meal options
     #[arg(short, long, default_value_t = false)]
     pub vegetarian: bool,
 }

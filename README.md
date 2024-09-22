@@ -1,51 +1,60 @@
 # tuemensa
 
-tuemensa is a simple cli tool to retrieve the current meal plan.
+`tuemensa` is a simple command-line tool designed to retrieve the current meal plan for the canteens at Eberhard Karls Universität Tübingen.
+The meal data is sourced from [Studierendenwerk Tübingen - Hohenheim](https://www.my-stuwe.de/mensa/).
+
+## Installation
+
+To install the tool directly from [crates.io](https://crates.io/crates/tuemensa), use the command:
+```sh
+cargo install tuemensa
+```
+Alternatively, you can clone this repository and run the following command from the project root to build it:
+```sh
+cargo build -r
+```
+
 
 ## Usage
 
-Options:
+Available options:
 
-- `-m`, `--morgenstelle`  Show Mensa Morgenstelle
-- `-w`, `--wilhemstrasse`     Show Mensa Wilhelmstraße
-- `-p`, `--prinzkarl` Show Mensa Prinz Karl
-- `--plaintext`       Format as plain text
+- `-m`, `--morgenstelle`  Display the meal plan for Mensa Morgenstelle
+- `-w`, `--wilhemstrasse`     Display the meal plan for Mensa Wilhelmstraße
+- `-p`, `--prinzkarl` Display the meal plan for Mensa Prinz Karl
+- `--plaintext`       Output the meal plan in plain text format
 - `-o`, `--oneline`       Use very short format (oneline)
-- `-d`, `--days <DAYS>`   Offset of days in the future (valid inputs 0-7) [default: 0]
-- `-v`, `--vegetarian`    Show the vegetarian menu
+- `-d`, `--days <DAYS>`   Specify the number of days ahead to display (valid inputs 0-7) [default: 0]
+- `-v`, `--vegetarian`    Display only the vegetarian menu options
 - `-h`, `--help`          Print help information
 - `-V`, `--version`       Print version information
 
 ### Examples
 
-Display the current plan for both canteens:
+To display the current meal plan for both Mensa Morgenstelle and Wilhelmstraße:
 
 ```sh
-tuemensa -s -m
+tuemensa -w -m
 ```
 Example screenshot:
 
 ![MorgenstelleShedhalle](screenshots/output_morgenstelle_shedhalle.png)
 
-Display the plan for the next day:
+To view the meal plan for the following day:
 
 ```sh
-tuemensa -s -d 1
+tuemensa -w -d 1
 ```
 
-The oneline is useful if you integrate this tool as a desktop widget
-and like to get just a basic idea of the current available meal.
+For a compact view, which is useful for integration into desktop widgets, you can use the oneline option:
 
 ```sh
-tuemensa -s -o
+tuemensa -w -o
 ```
 
 Example screenshot:
 
 ![CommandOutput](screenshots/kde_command_output.png)
 
-For KDE this can be achieved with the Plasma 5 Applet [Command Output](https://store.kde.org/p/1166510/).
+For KDE users, this functionality can be achieved with the Plasma 5 Applet [Command Output](https://store.kde.org/p/1166510/).
 
-## Build
-
-Use the `cargo build -r` command inside the root of this project.
