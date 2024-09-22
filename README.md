@@ -7,7 +7,7 @@ tuemensa is a simple cli tool to retrieve the current meal plan.
 Options:
 
 - `-m`, `--morgenstelle`  Show Mensa Morgenstelle
-- `-s`, `--shedhalle`     Show Mensa Shedhalle
+- `-w`, `--wilhemstrasse`     Show Mensa Wilhelmstraße
 - `-p`, `--prinzkarl` Show Mensa Prinz Karl
 - `--plaintext`       Format as plain text
 - `-o`, `--oneline`       Use very short format (oneline)
