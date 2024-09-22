@@ -5,7 +5,7 @@ use std::time::Duration;
 use ureq::{Agent, Error};
 
 pub enum MensaName {
-    Shedhalle,
+    Wilhelmstrasse,
     Morgenstelle,
     PrinzKarl,
 }
@@ -36,7 +36,7 @@ fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
 pub struct Mensa {
     #[serde(alias = "621")] // Morgenstelle
     #[serde(alias = "623")] // Prinz Karl
-    #[serde(rename = "611")] // Shedhalle
+    #[serde(rename = "611")] // Wilhelmstraße
     canteen: Canteen,
 }
 
@@ -48,7 +48,7 @@ impl Mensa {
             .build();
 
         let canteen_id = match name {
-            MensaName::Shedhalle => 611,
+            MensaName::Wilhelmstrasse => 611,
             MensaName::Morgenstelle => 621,
             MensaName::PrinzKarl => 623,
         };
@@ -70,7 +70,7 @@ impl Mealplan for Mensa {
     }
 
     fn name(&self) -> &str {
-        &&self.canteen.canteen
+        &self.canteen.canteen
     }
 
     fn today(&self) -> (String, Vec<&Menu>) {

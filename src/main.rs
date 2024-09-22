@@ -16,8 +16,8 @@ fn exec_arguments(args: &cli::Args) {
         }
     }
 
-    if args.shedhalle {
-        if let Ok(resp) = Mensa::from(MensaName::Shedhalle) {
+    if args.wilhelmstrasse {
+        if let Ok(resp) = Mensa::from(MensaName::Wilhelmstrasse) {
             exec_arg_helper(args, &resp);
         }
     }

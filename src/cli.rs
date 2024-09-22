@@ -8,9 +8,9 @@ pub struct Args {
     #[arg(short, long, default_value_t = false)]
     pub morgenstelle: bool,
 
-    /// Show Mensa Shedhalle
+    /// Show Mensa Wilhelmstraße
     #[arg(short, long, default_value_t = false)]
-    pub shedhalle: bool,
+    pub wilhelmstrasse: bool,
 
     /// Show Mensa Prinz Karl
     #[arg(short, long, default_value_t = false)]
