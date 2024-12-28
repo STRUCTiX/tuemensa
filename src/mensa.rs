@@ -75,14 +75,13 @@ impl Mealplan for Mensa {
 
     fn today(&self) -> (String, Vec<&Menu>) {
         let local = format!("{}", Local::now().format("%Y-%m-%d"));
-        (
-            local.clone(),
-            self.canteen
-                .menus
-                .iter()
-                .filter(|&x| x.menu_date == local)
-                .collect(),
-        )
+        let menus = self
+            .canteen
+            .menus
+            .iter()
+            .filter(|&x| x.menu_date == local)
+            .collect();
+        (local, menus)
     }
 
     fn nth(&self, days: u8, vegetarian: bool) -> Option<(String, Vec<&Menu>)> {
@@ -90,23 +89,21 @@ impl Mealplan for Mensa {
             Some(dt) => {
                 let local = format!("{}", dt.format("%Y-%m-%d"));
                 if vegetarian {
-                    Some((
-                        local.clone(),
-                        self.canteen
-                            .menus
-                            .iter()
-                            .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
-                            .collect(),
-                    ))
+                    let menus = self
+                        .canteen
+                        .menus
+                        .iter()
+                        .filter(|&x| x.menu_date == local && x.menu_line.contains("veg"))
+                        .collect();
+                    Some((local, menus))
                 } else {
-                    Some((
-                        local.clone(),
-                        self.canteen
-                            .menus
-                            .iter()
-                            .filter(|&x| x.menu_date == local)
-                            .collect(),
-                    ))
+                    let menus = self
+                        .canteen
+                        .menus
+                        .iter()
+                        .filter(|&x| x.menu_date == local)
+                        .collect();
+                    Some((local, menus))
                 }
             }
             _ => None,
