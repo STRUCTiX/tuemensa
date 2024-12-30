@@ -1,7 +1,6 @@
 extern crate serde_derive;
 use chrono::{Datelike, Local};
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 #[cfg(feature = "ureq")]
 use ureq::Agent;
 
