@@ -19,9 +19,9 @@ pub trait Mealplan {
 }
 
 fn get_nth_date(days: u8) -> Option<chrono::DateTime<Local>> {
-    if days > 7 {
-        return None;
-    }
+    //if days > 7 {
+    //    return None;
+    //}
 
     if let Some(dt) = Local::now().checked_add_days(chrono::Days::new(days as u64)) {
         return match dt.weekday() {
