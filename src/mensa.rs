@@ -2,7 +2,8 @@ extern crate serde_derive;
 use chrono::{Datelike, Local};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
-use ureq::{Agent, Error};
+#[cfg(feature = "ureq")]
+use ureq::Agent;
 
 pub enum MensaName {
     Wilhelmstrasse,
@@ -41,12 +42,8 @@ pub struct Mensa {
 }
 
 impl Mensa {
-    pub fn from(name: MensaName) -> Result<Mensa, Error> {
-        let agent: Agent = ureq::AgentBuilder::new()
-            .timeout_read(Duration::from_secs(5))
-            .timeout_write(Duration::from_secs(5))
-            .build();
-
+    #[cfg(feature = "small")]
+    pub fn from(name: MensaName) -> anyhow::Result<Mensa> {
         let canteen_id = match name {
             MensaName::Wilhelmstrasse => 611,
             MensaName::Morgenstelle => 621,
@@ -56,7 +53,26 @@ impl Mensa {
         let url =
             format!("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/{canteen_id}?lang=de");
 
+        let agent: Agent = ureq::AgentBuilder::new()
+            .timeout_read(Duration::from_secs(5))
+            .timeout_write(Duration::from_secs(5))
+            .build();
         Ok(agent.get(&url).call()?.into_json::<Mensa>()?)
+    }
+
+    #[cfg(feature = "android")]
+    pub fn from(name: MensaName) -> anyhow::Result<Mensa> {
+        let canteen_id = match name {
+            MensaName::Wilhelmstrasse => 611,
+            MensaName::Morgenstelle => 621,
+            MensaName::PrinzKarl => 623,
+        };
+
+        let url =
+            format!("https://www.my-stuwe.de//wp-json/mealplans/v1/canteens/{canteen_id}?lang=de");
+
+        let client = reqwest::blocking::Client::new();
+        Ok(client.get(url).send()?.json()?)
     }
 
     fn _print(&self) {
