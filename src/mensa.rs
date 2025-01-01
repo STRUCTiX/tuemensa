@@ -10,6 +10,7 @@ pub enum MensaName {
     PrinzKarl,
 }
 
+#[allow(dead_code)]
 pub trait Mealplan {
     fn id(&self) -> &str;
     fn name(&self) -> &str;
