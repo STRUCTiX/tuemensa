@@ -23,7 +23,7 @@ serde_derive = "1.0.217"
 anyhow = "=1.0.95"
 
 [dependencies.ureq]
-version = "*"
+version = "2.12.1"
 features = ["default", "json", "tls"]
 optional = true
 
